@@ -24,10 +24,14 @@ and fail with `'Mouse' was not declared in this scope`.
 ```ini
 [env:micro]
 platform = atmelavr
-board = micro
+board = micro_custom
 framework = arduino
 lib_deps = arduino-libraries/Mouse
 ```
+
+`micro_custom` is defined in `boards/micro_custom.json`. It's a copy of the stock Arduino Micro
+definition with custom USB descriptors (see [USB identity](#usb-identity)). To use stock IDs,
+set `board = micro`.
 
 ```powershell
 pio run -t upload
@@ -59,7 +63,38 @@ Constants at the top of `src/main.cpp`:
 - **Seeding:** `randomSeed()` uses noise from a floating analog pin plus `micros()`, so each boot
   produces a different pattern.
 
+## USB identity
+
+PlatformIO's AVR builder takes `USB_VID`/`USB_PID` from the first entry of the board's
+`build.hwids`, the product string from `build.usb_product` and the manufacturer from `vendor`.
+Passing `-DUSB_VID` in `build_flags` doesn't override these, so a custom board file is used instead:
+
+```json
+"hwids": [["0x046D", "0xC077"]],
+"usb_product": "USB Optical Mouse",
+...
+"vendor": "Logitech"
+```
+
+PlatformIO requires `name`, `url` and `vendor` in custom board files.
+
+Verify the IDs:
+
+```powershell
+pio run -t clean
+pio run -v | findstr USB_VID
+```
+
+- Only the application firmware changes. The Caterina bootloader still enumerates as `2341:0037`.
+  Uploads still work because PlatformIO detects the new port after the 1200-bps reset.
+  If an upload fails, double-tap reset.
+- Windows creates a new device node for the new VID/PID. The old `VID_2341` entry stays under
+  *View → Show hidden devices*.
+- The example VID/PID belongs to Logitech. Use it for personal use only; don't distribute
+  devices with another vendor's IDs.
+
 ## Notes
 
-- The device appears in Device Manager as an *Arduino Micro* (VID `2341`).
+- The HID mouse is interface `MI_02` of a composite device. Interfaces 0–1 are the CDC serial port
+  used for upload and `Serial` logging.
 - Unplug the board to stop it. There is no on/off switch.
