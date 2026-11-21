@@ -1,0 +1,25 @@
+{
+  "build": {
+    "core": "arduino",
+    "extra_flags": "-DARDUINO_AVR_MICRO",
+    "f_cpu": "16000000L",
+    "hwids": [["0x046D", "0xC077"]],
+    "mcu": "atmega32u4",
+    "usb_product": "USB Optical Mouse",
+    "variant": "micro"
+  },
+  "frameworks": ["arduino"],
+  "name": "Arduino Micro (custom USB IDs)",
+  "url": "https://www.arduino.cc/en/Main/ArduinoBoardMicro",
+  "upload": {
+    "disable_flushing": true,
+    "maximum_ram_size": 2560,
+    "maximum_size": 28672,
+    "protocol": "avr109",
+    "require_upload_port": true,
+    "speed": 57600,
+    "use_1200bps_touch": true,
+    "wait_for_upload_port": true
+  },
+  "vendor": "Logitech"
+}

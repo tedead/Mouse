@@ -126,13 +126,13 @@ void loop()
 
     Serial.print("Moved "); 
     Serial.print(dx); 
-    Serial.print(', '); 
+    Serial.print(", "); 
     Serial.println(dy);
 
     int hold = random(80, 600); // hold for 80-600 ms
 
     Serial.print("Holding for ");
-    Serial.print(hold);
+    Serial.println(hold);
 
     delay(hold);                // short hesitation between moves
 
